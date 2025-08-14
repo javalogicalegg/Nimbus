@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { APP_NAME, THEME_CONFIGS } from '../constants';
+import { APP_NAME, THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
 import { Theme } from '../types';
 import ThemeSwitcher from './ThemeSwitcher';
 import CloudIcon from './icons/CloudIcon';
@@ -8,12 +8,17 @@ import DotsMenuIcon from './icons/DotsMenuIcon';
 interface HeaderProps {
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
+  customColor: string;
+  onCustomColorChange: (color: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
+const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCustomColorChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const themeConfig = THEME_CONFIGS[theme];
+  
+  const themeConfig = theme === Theme.Custom 
+    ? CUSTOM_THEME_CONFIG 
+    : THEME_CONFIGS[theme as Exclude<Theme, Theme.Custom>];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -69,8 +74,12 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
               currentTheme={theme}
               onThemeChange={(newTheme) => {
                 onThemeChange(newTheme);
-                setIsMenuOpen(false);
+                if(newTheme !== Theme.Custom) {
+                    setIsMenuOpen(false);
+                }
               }}
+              customColor={customColor}
+              onCustomColorChange={onCustomColorChange}
             />
           </div>
         )}

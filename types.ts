@@ -3,6 +3,7 @@ export enum Theme {
   Black = 'black',
   Grey = 'grey',
   White = 'white',
+  Custom = 'custom',
 }
 
 export type MessageRole = 'user' | 'assistant';

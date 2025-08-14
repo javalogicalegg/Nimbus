@@ -9,7 +9,9 @@ export const INITIAL_MESSAGE: ChatMessage = {
   content: "Hello! I am Nimbus, your reality composer. You can chat with me, or ask me to generate an image by starting your prompt with `/imagine`.",
 };
 
-export const THEME_CONFIGS: Record<Theme, {
+export const DEFAULT_CUSTOM_COLOR = '#4ade80'; // A nice green
+
+type ThemeConfig = {
   bg: string;
   text: string;
   card: string;
@@ -21,7 +23,9 @@ export const THEME_CONFIGS: Record<Theme, {
   textGlow: string;
   iconGlow: string;
   inputFocus: string;
-}> = {
+};
+
+export const THEME_CONFIGS: Record<Theme.Black | Theme.Grey | Theme.White, ThemeConfig> = {
   [Theme.Black]: {
     bg: 'bg-black',
     text: 'text-gray-200',
@@ -61,4 +65,18 @@ export const THEME_CONFIGS: Record<Theme, {
     iconGlow: '[filter:drop-shadow(0_0_4px_theme(colors.indigo.500))]',
     inputFocus: 'focus:border-indigo-500 focus:ring-indigo-500/50 focus:shadow-[0_0_12px_0_theme(colors.indigo.500)]',
   },
+};
+
+export const CUSTOM_THEME_CONFIG: ThemeConfig = {
+    bg: 'bg-black',
+    text: 'text-gray-200',
+    card: 'bg-gray-900/50',
+    accent: 'text-[var(--custom-accent-color)]',
+    userBubble: 'bg-[var(--custom-accent-color)]',
+    assistantBubble: 'bg-gray-800',
+    userText: 'text-white',
+    assistantText: 'text-gray-200',
+    textGlow: '[text-shadow:0_0_10px_var(--custom-accent-color)]',
+    iconGlow: '[filter:drop-shadow(0_0_4px_var(--custom-accent-color))]',
+    inputFocus: 'focus:border-[var(--custom-accent-color)] focus:ring-[var(--custom-accent-color)]/50 focus:shadow-[0_0_12px_0_var(--custom-accent-color)]',
 };

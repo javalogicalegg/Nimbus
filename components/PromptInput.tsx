@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SendIcon from './icons/SendIcon';
 import { Theme } from '../types';
-import { THEME_CONFIGS } from '../constants';
+import { THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
 
 interface PromptInputProps {
   onSendMessage: (prompt: string) => void;
@@ -11,7 +11,11 @@ interface PromptInputProps {
 
 const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, theme }) => {
   const [prompt, setPrompt] = useState('');
-  const themeConfig = THEME_CONFIGS[theme];
+  
+  const themeConfig = theme === Theme.Custom 
+    ? CUSTOM_THEME_CONFIG 
+    : THEME_CONFIGS[theme as Exclude<Theme, Theme.Custom>];
+
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Theme } from '../types';
-import { THEME_CONFIGS } from '../constants';
+import { THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
 
 interface MarkdownRendererProps {
   content: string;
@@ -10,7 +10,9 @@ interface MarkdownRendererProps {
 }
 
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, theme }) => {
-  const themeConfig = THEME_CONFIGS[theme];
+  const themeConfig = theme === Theme.Custom
+    ? CUSTOM_THEME_CONFIG
+    : THEME_CONFIGS[theme as Exclude<Theme, Theme.Custom>];
   const isWhite = theme === Theme.White;
 
   return (
@@ -25,8 +27,9 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, theme }) =
             ul: ({node, ...props}) => <ul className="list-disc list-outside my-3 pl-6 space-y-1" {...props} />,
             ol: ({node, ...props}) => <ol className="list-decimal list-outside my-3 pl-6 space-y-1" {...props} />,
             li: ({node, ...props}) => <li className="pl-2" {...props} />,
-            code({node, inline, className, children, ...props}) {
-              const match = /language-(\w+)/.exec(className || '')
+            code(props: any) {
+              const { node, inline, className, children, ...rest } = props;
+              const match = /language-(\w+)/.exec(className || '');
               return !inline ? (
                 <div className={`my-3 rounded-lg overflow-hidden ${isWhite ? 'bg-gray-800' : 'bg-black/50'}`}>
                     {match && (
@@ -35,13 +38,13 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, theme }) =
                         </div>
                     )}
                     <pre className="p-4 overflow-x-auto text-sm leading-relaxed">
-                        <code className={`!bg-transparent !p-0 font-mono ${isWhite ? 'text-gray-200' : themeConfig.assistantText}`} {...props}>
+                        <code className={`!bg-transparent !p-0 font-mono ${isWhite ? 'text-gray-200' : themeConfig.assistantText}`} {...rest}>
                             {children}
                         </code>
                     </pre>
                 </div>
               ) : (
-                <code className={`px-1.5 py-1 mx-0.5 rounded font-mono text-sm ${isWhite ? 'bg-gray-200 text-indigo-700' : 'bg-gray-900/80 text-blue-300'}`} {...props}>
+                <code className={`px-1.5 py-1 mx-0.5 rounded font-mono text-sm ${isWhite ? 'bg-gray-200 text-indigo-700' : 'bg-gray-900/80 text-blue-300'}`} {...rest}>
                   {children}
                 </code>
               )

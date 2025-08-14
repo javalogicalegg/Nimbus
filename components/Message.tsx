@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChatMessage, Theme } from '../types';
-import { THEME_CONFIGS } from '../constants';
+import { THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
 import SpinnerIcon from './icons/SpinnerIcon';
 import MarkdownRenderer from './MarkdownRenderer';
 
@@ -11,7 +11,9 @@ interface MessageProps {
 
 const Message: React.FC<MessageProps> = ({ message, theme }) => {
   const isUser = message.role === 'user';
-  const themeConfig = THEME_CONFIGS[theme];
+  const themeConfig = theme === Theme.Custom
+    ? CUSTOM_THEME_CONFIG
+    : THEME_CONFIGS[theme as Exclude<Theme, Theme.Custom>];
 
   const renderContent = () => {
     switch (message.type) {

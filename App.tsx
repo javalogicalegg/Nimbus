@@ -1,16 +1,30 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Theme, ChatMessage } from './types';
-import { THEME_CONFIGS, INITIAL_MESSAGE } from './constants';
+import { THEME_CONFIGS, INITIAL_MESSAGE, CUSTOM_THEME_CONFIG, DEFAULT_CUSTOM_COLOR } from './constants';
 import { generateText, generateImage } from './services/geminiService';
 import Header from './components/Header';
 import ChatWindow from './components/ChatWindow';
 import PromptInput from './components/PromptInput';
 
 const App: React.FC = () => {
-  const [theme, setTheme] = useState<Theme>(Theme.Black);
+  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem('theme') as Theme) || Theme.Black);
+  const [customColor, setCustomColor] = useState<string>(() => localStorage.getItem('customColor') || DEFAULT_CUSTOM_COLOR);
   const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE]);
   const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('customColor', customColor);
+    if (theme === Theme.Custom) {
+      document.documentElement.style.setProperty('--custom-accent-color', customColor);
+    } else {
+        document.documentElement.style.removeProperty('--custom-accent-color');
+    }
+  }, [customColor, theme]);
 
   const handleSendMessage = async (prompt: string) => {
     setIsLoading(true);
@@ -72,11 +86,23 @@ const App: React.FC = () => {
     }
   };
 
-  const themeConfig = THEME_CONFIGS[theme];
+  const themeConfig = theme === Theme.Custom 
+    ? CUSTOM_THEME_CONFIG 
+    : THEME_CONFIGS[theme as Exclude<Theme, Theme.Custom>];
+
+  const appStyle = theme === Theme.Custom ? { '--custom-accent-color': customColor } as React.CSSProperties : {};
 
   return (
-    <div className={`flex flex-col h-screen ${themeConfig.bg} ${themeConfig.text} transition-colors duration-300`}>
-      <Header theme={theme} onThemeChange={setTheme} />
+    <div 
+        className={`flex flex-col h-screen ${themeConfig.bg} ${themeConfig.text} transition-colors duration-300`}
+        style={appStyle}
+    >
+      <Header 
+        theme={theme} 
+        onThemeChange={setTheme} 
+        customColor={customColor}
+        onCustomColorChange={setCustomColor}
+      />
       <div className="flex-1 flex flex-col overflow-hidden">
         <ChatWindow messages={messages} theme={theme} />
         <div className={`p-4 border-t ${theme === Theme.White ? 'border-gray-200 bg-gray-50' : 'border-gray-800 bg-black/10'}`}>
