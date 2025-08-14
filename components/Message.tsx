@@ -3,17 +3,22 @@ import { ChatMessage, Theme } from '../types';
 import { THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
 import SpinnerIcon from './icons/SpinnerIcon';
 import MarkdownRenderer from './MarkdownRenderer';
+import StreamingText from './StreamingText';
 
 interface MessageProps {
   message: ChatMessage;
   theme: Theme;
+  isLoading: boolean;
+  isLastMessage: boolean;
 }
 
-const Message: React.FC<MessageProps> = ({ message, theme }) => {
+const Message: React.FC<MessageProps> = ({ message, theme, isLoading, isLastMessage }) => {
   const isUser = message.role === 'user';
   const themeConfig = theme === Theme.Custom
     ? CUSTOM_THEME_CONFIG
     : THEME_CONFIGS[theme as Exclude<Theme, Theme.Custom>];
+
+  const isStreaming = message.role === 'assistant' && isLastMessage && isLoading && message.type === 'text';
 
   const renderContent = () => {
     switch (message.type) {
@@ -37,7 +42,17 @@ const Message: React.FC<MessageProps> = ({ message, theme }) => {
       case 'text':
       default:
         if (isUser) {
-          return <p className="whitespace-pre-wrap">{message.content}</p>;
+          return (
+             <div className="flex flex-col gap-2">
+                {message.imageUrl && (
+                    <img src={message.imageUrl} alt="User upload" className="rounded-lg max-w-xs" />
+                )}
+                <p className="whitespace-pre-wrap">{message.content}</p>
+             </div>
+          );
+        }
+        if (isStreaming) {
+          return <StreamingText content={message.content} />;
         }
         return <MarkdownRenderer content={message.content} theme={theme} />;
     }

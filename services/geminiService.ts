@@ -1,5 +1,5 @@
 
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, GenerateContentParameters } from "@google/genai";
 
 if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
@@ -10,18 +10,56 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 const TEXT_MODEL = 'gemini-2.5-flash';
 const IMAGE_MODEL = 'imagen-3.0-generate-002';
 
-export const generateText = async (prompt: string): Promise<string> => {
+interface ImagePart {
+    data: string; // base64 encoded string
+    mimeType: string;
+}
+
+export const generateTextStream = async (
+    prompt: string,
+    onStream: (chunk: string) => void,
+    systemInstruction?: string,
+    image?: ImagePart
+): Promise<void> => {
     try {
-        const response = await ai.models.generateContent({
+        const contents: GenerateContentParameters['contents'] = image 
+            ? {
+                parts: [
+                    { text: prompt },
+                    {
+                        inlineData: {
+                            data: image.data,
+                            mimeType: image.mimeType,
+                        },
+                    },
+                ],
+              }
+            : prompt;
+
+        const request: GenerateContentParameters = {
             model: TEXT_MODEL,
-            contents: prompt,
-        });
-        return response.text;
+            contents,
+        };
+
+        if (systemInstruction) {
+            request.config = {
+                systemInstruction,
+            };
+        }
+
+        const response = await ai.models.generateContentStream(request);
+
+        for await (const chunk of response) {
+            if (chunk.text) {
+                 onStream(chunk.text);
+            }
+        }
     } catch (error) {
         console.error("Error generating text:", error);
         throw new Error("Failed to generate text response. Please check the console for details.");
     }
 };
+
 
 export const generateImage = async (prompt: string): Promise<string> => {
     try {

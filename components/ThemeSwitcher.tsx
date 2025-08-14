@@ -15,9 +15,8 @@ const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
   onCustomColorChange,
 }) => {
   const themes = [
-    { id: Theme.Black, color: 'bg-black', name: 'Black' },
-    { id: Theme.Grey, color: 'bg-slate-800', name: 'Grey' },
-    { id: Theme.White, color: 'bg-white', name: 'White' },
+    { id: Theme.Dark, color: 'bg-slate-800', name: 'Dark' },
+    { id: Theme.White, color: 'bg-white', name: 'Light' },
   ];
 
   return (
