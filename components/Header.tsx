@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { APP_NAME, THEME_CONFIGS } from '../constants';
 import { Theme } from '../types';
@@ -34,9 +33,13 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
         theme === Theme.White ? 'border-gray-200' : 'border-gray-800'
       }`}
     >
-      <div className="flex items-center gap-3">
-        <CloudIcon className={`w-8 h-8 ${themeConfig.accent}`} />
-        <h1 className={`text-xl font-bold ${themeConfig.accent}`}>
+      <div className="flex items-center gap-3 animate-pulse-glow">
+        <CloudIcon
+          className={`w-8 h-8 ${themeConfig.accent} ${themeConfig.iconGlow} transition-all duration-300`}
+        />
+        <h1
+          className={`text-xl font-bold ${themeConfig.accent} ${themeConfig.textGlow} transition-all duration-300`}
+        >
           {APP_NAME}
         </h1>
       </div>

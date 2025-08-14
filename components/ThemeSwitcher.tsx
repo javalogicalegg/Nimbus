@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Theme } from '../types';
 
@@ -24,9 +23,9 @@ const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({ currentTheme, onThemeChan
           aria-label={`Switch to ${theme.name} theme`}
         >
           <div
-            className={`w-6 h-6 rounded-full ${theme.color} border-2 transition-all duration-200 ${
+            className={`w-6 h-6 rounded-full ${theme.color} border-2 transition-all duration-300 ${
               currentTheme === theme.id
-                ? 'border-blue-400 scale-110'
+                ? 'border-blue-400 scale-110 shadow-lg shadow-blue-400/50'
                 : 'border-gray-500 group-hover:border-gray-400'
             }`}
           />

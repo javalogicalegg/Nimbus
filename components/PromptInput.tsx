@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import SendIcon from './icons/SendIcon';
 import { Theme } from '../types';
@@ -37,19 +36,19 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
         disabled={isLoading}
         className={`w-full p-4 pr-14 text-base rounded-2xl resize-none border-2 focus:outline-none focus:ring-2 transition-all duration-300 ${
           theme === Theme.White
-            ? 'bg-white border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900'
-            : 'bg-gray-800 border-gray-700 focus:ring-blue-500 focus:border-blue-500 text-gray-100 placeholder-gray-400'
-        } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            ? 'bg-white border-gray-300 text-gray-900'
+            : 'bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400'
+        } ${themeConfig.inputFocus} ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         rows={1}
         style={{ minHeight: '56px', maxHeight: '200px' }}
       />
       <button
         type="submit"
         disabled={isLoading || !prompt.trim()}
-        className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-colors duration-200 ${
+        className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all duration-200 ${
           isLoading || !prompt.trim()
             ? 'text-gray-400 cursor-not-allowed'
-            : `${themeConfig.accent} hover:bg-gray-500/20`
+            : `${themeConfig.accent} hover:bg-gray-500/20 active:scale-95 [filter:drop-shadow(0_0_4px_currentColor)]`
         }`}
       >
         <SendIcon className="w-6 h-6" />
