@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nimbus Reality Composer</title>
+    <title>Nimbus</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       @keyframes pulse-glow {
@@ -28,6 +28,85 @@
       }
       .animate-fade-in-chunk {
         animation: fade-in-chunk 0.4s ease-out forwards;
+      }
+      @keyframes glint {
+        0% {
+            transform: translateX(-100%) skewX(-20deg);
+        }
+        100% {
+            transform: translateX(200%) skewX(-20deg);
+        }
+      }
+      .glint-container {
+          position: relative;
+          overflow: hidden;
+          display: inline-block;
+      }
+      .glint-effect {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%);
+          transform: translateX(-100%) skewX(-20deg);
+          pointer-events: none;
+      }
+      .glint-container:hover .glint-effect {
+          animation: glint 0.75s ease-in-out;
+      }
+      
+      /* New Additions for Flair */
+      @keyframes animated-gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .gradient-bg-dark {
+        background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #1e293b);
+        background-size: 400% 400%;
+        animation: animated-gradient 30s ease infinite;
+      }
+      .gradient-bg-white {
+        background: linear-gradient(-45deg, #f1f5f9, #e2e8f0, #f8fafc, #e2e8f0);
+        background-size: 400% 400%;
+        animation: animated-gradient 30s ease infinite;
+      }
+      .gradient-bg-custom {
+        background: linear-gradient(-45deg, #020617, #0f172a, color-mix(in srgb, var(--custom-accent-color) 25%, #0f172a), #020617);
+        background-size: 400% 400%;
+        animation: animated-gradient 30s ease infinite;
+      }
+
+      @keyframes message-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.01); opacity: 0.95; }
+      }
+      .animate-message-pulse {
+        animation: message-pulse 2s ease-in-out infinite;
+      }
+      
+      .persona-icon-container:hover .persona-icon {
+        transform: scale(1.2) rotate(-10deg);
+      }
+      
+      .ripple-button {
+          position: relative;
+          overflow: hidden;
+      }
+      .ripple {
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.3);
+          transform: scale(0);
+          animation: ripple-animation 0.6s linear;
+          pointer-events: none;
+      }
+      @keyframes ripple-animation {
+          to {
+              transform: scale(4);
+              opacity: 0;
+          }
       }
     </style>
   <script type="importmap">

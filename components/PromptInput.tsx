@@ -5,7 +5,6 @@ import PaperclipIcon from './icons/PaperclipIcon';
 import XCircleIcon from './icons/XCircleIcon';
 import { Theme } from '../types';
 import { THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
-import PromptBuilder from './PromptBuilder';
 
 interface ImageFile {
   dataUrl: string; // This is the base64 encoded string with mime type prefix
@@ -13,7 +12,7 @@ interface ImageFile {
   mimeType: string;
 }
 interface PromptInputProps {
-  onSendMessage: (prompt: string, image?: {data: string, mimeType: string}, options?: {aspectRatio?: string}) => void;
+  onSendMessage: (prompt: string, image?: {data: string, mimeType: string}) => void;
   isLoading: boolean;
   theme: Theme;
 }
@@ -21,24 +20,18 @@ interface PromptInputProps {
 const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, theme }) => {
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<ImageFile | null>(null);
-  const [aspectRatio, setAspectRatio] = useState('1:1');
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const themeConfig = theme === Theme.Custom 
     ? CUSTOM_THEME_CONFIG 
     : THEME_CONFIGS[theme as Exclude<Theme, Theme.Custom>];
 
-  const isImagineMode = prompt.toLowerCase().startsWith('/imagine ');
-
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if ((prompt.trim() || image) && !isLoading) {
-      const options = isImagineMode ? { aspectRatio } : undefined;
-      onSendMessage(prompt.trim(), image ? { data: image.data, mimeType: image.mimeType } : undefined, options);
+      onSendMessage(prompt.trim(), image ? { data: image.data, mimeType: image.mimeType } : undefined);
       setPrompt('');
       setImage(null);
-      setAspectRatio('1:1');
     }
   };
 
@@ -60,22 +53,6 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
       e.target.value = '';
   }
 
-  const handleModifierClick = (modifier: string) => {
-    // Get current prompt without the /imagine command
-    const currentPromptText = prompt.substring('/imagine '.length).trim();
-    
-    // Split into the main subject and the modifiers
-    const parts = currentPromptText.split(',').map(p => p.trim());
-    const subject = parts[0] || '';
-    const modifiers = new Set(parts.slice(1).filter(Boolean));
-    
-    // Add the new modifier if it's not there
-    modifiers.add(modifier);
-    
-    const newPrompt = `/imagine ${subject}, ${[...modifiers].join(', ')}`.trim();
-    setPrompt(newPrompt);
-}
-
   return (
     <form onSubmit={handleSubmit} className="relative">
       {image && (
@@ -94,15 +71,6 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
         </div>
       )}
 
-      <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isImagineMode ? 'max-h-[500px] mb-3' : 'max-h-0'}`}>
-         <PromptBuilder 
-            onModifierClick={handleModifierClick}
-            onAspectRatioChange={setAspectRatio}
-            selectedAspectRatio={aspectRatio}
-            theme={theme}
-        />
-      </div>
-
       <div className="relative">
         <textarea
             value={prompt}
@@ -113,7 +81,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
                 handleSubmit(e as any);
             }
             }}
-            placeholder="Ask me anything or try '/imagine a robot surfing'..."
+            placeholder="Ask me anything..."
             disabled={isLoading}
             className={`w-full p-4 pl-14 pr-14 text-base rounded-2xl resize-none border-2 focus:outline-none focus:ring-2 transition-all duration-300 ${
             theme === Theme.White

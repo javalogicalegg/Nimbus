@@ -5,6 +5,8 @@ export enum Theme {
   Custom = 'custom',
 }
 
+export type AppMode = 'chat' | 'composer' | 'sandbox';
+
 export type Persona = {
   id: string;
   name: string;

@@ -1,13 +1,32 @@
 import { Theme, ChatMessage, Persona } from './types';
 
-export const APP_NAME = "Nimbus Reality Composer";
+export const APP_NAME = "Nimbus";
 
-export const INITIAL_MESSAGE: ChatMessage = {
+export const CHAT_INITIAL_MESSAGE: ChatMessage = {
   id: 'init-message',
   role: 'assistant',
   type: 'text',
-  content: "Hello! I am Nimbus, your reality composer. You can chat with me, upload an image by clicking the paperclip icon, or ask me to generate an image by starting your prompt with `/imagine`.",
+  content: "Hello! I am Nimbus, your reality composer. You can chat with me or upload an image by clicking the paperclip icon.",
 };
+
+export const SANDBOX_INITIAL_MESSAGE: ChatMessage = {
+    id: 'init-message-sandbox',
+    role: 'assistant',
+    type: 'text',
+    content: "Welcome to the Persona Sandbox! Choose a persona from the list below and start a conversation to see how they respond."
+};
+
+export const PROMPT_ENHANCERS = ['cinematic lighting', 'hyperrealistic', '4K', 'in the style of Studio Ghibli', 'vibrant colors', 'dramatic atmosphere', 'volumetric lighting', 'minimalist', 'epic composition'];
+
+export const REMIX_SUGGESTIONS = ['Make it more dramatic', 'Change the color palette to be warmer', 'Try a different angle', 'Add more fantasy elements', 'Make it cyberpunk style'];
+
+export const COMPOSER_LOADING_MESSAGES = [
+    "Condensing pixels...",
+    "Weaving the cloud canvas...",
+    "Gathering stardust...",
+    "Painting with light...",
+    "Imagining new worlds...",
+];
 
 export const DEFAULT_CUSTOM_COLOR = '#4ade80'; // A nice green
 

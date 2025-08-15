@@ -1,5 +1,5 @@
 {
-  "name": "Nimbus Reality Composer",
+  "name": "Nimbus",
   "description": "An AI chat application that can generate both text and image responses using the Gemini API. It features a minimalist UI with three distinct color schemes: Black, Grey, and White.",
   "requestFramePermissions": [
     "camera"

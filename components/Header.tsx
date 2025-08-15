@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { APP_NAME, THEME_CONFIGS, CUSTOM_THEME_CONFIG, PERSONAS } from '../constants';
-import { Theme, Persona } from '../types';
+import { APP_NAME, THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
+import { Theme, AppMode } from '../types';
 import ThemeSwitcher from './ThemeSwitcher';
-import PersonaSwitcher from './PersonaSwitcher';
 import CloudIcon from './icons/CloudIcon';
 import DotsMenuIcon from './icons/DotsMenuIcon';
 
@@ -11,11 +10,46 @@ interface HeaderProps {
   onThemeChange: (theme: Theme) => void;
   customColor: string;
   onCustomColorChange: (color: string) => void;
-  persona: Persona;
-  onPersonaChange: (persona: Persona) => void;
+  mode: AppMode;
+  onModeChange: (mode: AppMode) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCustomColorChange, persona, onPersonaChange }) => {
+const NavButton: React.FC<{
+  onClick: () => void;
+  isActive: boolean;
+  children: React.ReactNode;
+  theme: Theme;
+}> = ({ onClick, isActive, children, theme }) => {
+  const themeConfig =
+    theme === Theme.Custom
+      ? CUSTOM_THEME_CONFIG
+      : THEME_CONFIGS[theme as Exclude<Theme, Theme.Custom>];
+
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 relative ${
+        isActive ? themeConfig.accent : 'text-gray-400 hover:text-white'
+      }`}
+    >
+      {children}
+      {isActive && (
+        <span
+          className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-0.5 rounded-full ${
+            theme === Theme.Custom
+              ? 'bg-[var(--custom-accent-color)]'
+              : theme === Theme.White
+              ? 'bg-indigo-500'
+              : 'bg-sky-400'
+          } ${themeConfig.iconGlow}`}
+        ></span>
+      )}
+    </button>
+  );
+};
+
+
+const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCustomColorChange, mode, onModeChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   
@@ -37,10 +71,13 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
 
   return (
     <header
-      className={`p-4 flex justify-between items-center border-b ${
-        theme === Theme.White ? 'border-gray-200' : 'border-gray-700'
-      }`}
+      className={`sticky top-0 z-20 p-4 flex justify-between items-center ${
+        theme === Theme.White ? 'bg-white/80' : 'bg-slate-900/50'
+      } backdrop-blur-sm`}
     >
+      <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r ${
+        theme === Theme.White ? 'from-transparent via-gray-200 to-transparent' : 'from-transparent via-gray-700 to-transparent'
+      }`} />
       <div className="flex items-center gap-3 animate-pulse-glow">
         <CloudIcon
           className={`w-8 h-8 ${themeConfig.accent} ${themeConfig.iconGlow} transition-all duration-300`}
@@ -51,6 +88,13 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
           {APP_NAME}
         </h1>
       </div>
+      
+      <div className="flex items-center gap-2">
+          <NavButton onClick={() => onModeChange('chat')} isActive={mode === 'chat'} theme={theme}>Chat</NavButton>
+          <NavButton onClick={() => onModeChange('composer')} isActive={mode === 'composer'} theme={theme}>Composer</NavButton>
+          <NavButton onClick={() => onModeChange('sandbox')} isActive={mode === 'sandbox'} theme={theme}>Sandbox</NavButton>
+      </div>
+
 
       <div className="relative" ref={menuRef}>
         <button
@@ -65,37 +109,18 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
 
         {isMenuOpen && (
           <div
-            className={`absolute top-full right-0 mt-2 p-4 rounded-xl shadow-lg z-10 w-56 divide-y ${
+            className={`absolute top-full right-0 mt-2 p-4 rounded-xl shadow-lg z-10 w-56 ${
               themeConfig.card
-            } ${theme === Theme.White ? 'divide-gray-200' : 'divide-gray-700'}`}
+            }`}
             role="menu"
           >
-             <div className="pb-3">
-                 <p className={`text-sm font-semibold mb-3 ${themeConfig.text}`}>
-                    Persona
-                </p>
-                <PersonaSwitcher 
-                    personas={PERSONAS}
-                    currentPersona={persona}
-                    onPersonaChange={(newPersona) => {
-                        onPersonaChange(newPersona);
-                        setIsMenuOpen(false);
-                    }}
-                />
-             </div>
-             <div className="pt-4">
+             <div>
                 <p className={`text-sm font-semibold mb-4 ${themeConfig.text}`}>
                 Appearance
                 </p>
                 <ThemeSwitcher
                 currentTheme={theme}
-                onThemeChange={(newTheme) => {
-                    onThemeChange(newTheme);
-                    if(newTheme !== Theme.Custom) {
-                        // Keep menu open for custom color picking
-                        // setIsMenuOpen(false);
-                    }
-                }}
+                onThemeChange={onThemeChange}
                 customColor={customColor}
                 onCustomColorChange={onCustomColorChange}
                 />

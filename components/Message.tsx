@@ -65,7 +65,7 @@ const Message: React.FC<MessageProps> = ({ message, theme, isLoading, isLastMess
           isUser
             ? `${themeConfig.userBubble} ${themeConfig.userText}`
             : `${themeConfig.assistantBubble} ${themeConfig.assistantText}`
-        }`}
+        } ${isStreaming ? 'animate-message-pulse' : ''}`}
       >
         {renderContent()}
       </div>
