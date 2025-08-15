@@ -38,7 +38,11 @@ const App: React.FC = () => {
     localStorage.setItem('personaId', persona.id);
   }, [persona]);
 
-  const handleSendMessage = async (prompt: string, image?: { data: string; mimeType: string }) => {
+  const handleSendMessage = async (
+    prompt: string, 
+    image?: { data: string; mimeType: string },
+    options?: { aspectRatio?: string }
+  ) => {
     setIsLoading(true);
 
     // Create a data URL from the raw base64 data for local display
@@ -66,7 +70,7 @@ const App: React.FC = () => {
 
       try {
         const imagePrompt = prompt.substring('/imagine '.length).trim();
-        const imageUrl = await generateImage(imagePrompt);
+        const imageUrl = await generateImage(imagePrompt, options?.aspectRatio);
         const assistantResponse: ChatMessage = {
           id: loadingMessageId,
           role: 'assistant',

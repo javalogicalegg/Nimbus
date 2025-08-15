@@ -61,7 +61,7 @@ export const generateTextStream = async (
 };
 
 
-export const generateImage = async (prompt: string): Promise<string> => {
+export const generateImage = async (prompt: string, aspectRatio: string = '1:1'): Promise<string> => {
     try {
         const response = await ai.models.generateImages({
             model: IMAGE_MODEL,
@@ -69,7 +69,7 @@ export const generateImage = async (prompt: string): Promise<string> => {
             config: {
                 numberOfImages: 1,
                 outputMimeType: 'image/jpeg',
-                aspectRatio: '1:1',
+                aspectRatio: aspectRatio,
             },
         });
 
