@@ -6,6 +6,7 @@ import { generateImage } from '../services/geminiService';
 import SpinnerIcon from './icons/SpinnerIcon';
 import MagicWandIcon from './icons/MagicWandIcon';
 import GenerationHistory from './GenerationHistory';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ComposerViewProps {
   theme: Theme;
@@ -24,6 +25,7 @@ const ComposerView: React.FC<ComposerViewProps> = ({ theme }) => {
     const [loadingMessage, setLoadingMessage] = useState(COMPOSER_LOADING_MESSAGES[0]);
     const [history, setHistory] = useState<HistoryItem[]>([]);
     const [currentPrompt, setCurrentPrompt] = useState('');
+    const { t } = useLanguage();
 
     const themeConfig = theme === Theme.Custom 
         ? CUSTOM_THEME_CONFIG 
@@ -44,7 +46,9 @@ const ComposerView: React.FC<ComposerViewProps> = ({ theme }) => {
             setResult({ imageUrl });
             setHistory(prev => [{ id: crypto.randomUUID(), url: imageUrl, prompt: promptToUse }, ...prev].slice(0, 10));
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+            const errorMessage = (error as Error).message === "No image was generated."
+                ? t('errorNoImageGenerated')
+                : t('errorFailedToGenerateImage');
             setResult({ error: errorMessage });
         } finally {
             setIsLoading(false);
@@ -92,9 +96,9 @@ const ComposerView: React.FC<ComposerViewProps> = ({ theme }) => {
         <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center">
             <div className="w-full max-w-4xl space-y-6">
                 <div className="text-center">
-                    <h2 className={`text-3xl font-bold ${themeConfig.accent} ${themeConfig.textGlow}`}>Image Composer</h2>
+                    <h2 className={`text-3xl font-bold ${themeConfig.accent} ${themeConfig.textGlow}`}>{t('imageComposer')}</h2>
                     <p className="text-base mt-2 glint-container">
-                        What do you want to create?
+                        {t('whatToCreate')}
                         <span className="glint-effect"></span>
                     </p>
                 </div>
@@ -110,7 +114,7 @@ const ComposerView: React.FC<ComposerViewProps> = ({ theme }) => {
                                     handleGenerate();
                                 }
                             }}
-                            placeholder="Describe the image you want to create..."
+                            placeholder={t('describeImagePlaceholder')}
                             disabled={isLoading}
                             className={`w-full p-4 pr-14 text-base rounded-2xl resize-none border-2 focus:outline-none focus:ring-2 transition-all duration-300 ${
                             theme === Theme.White
@@ -126,8 +130,8 @@ const ComposerView: React.FC<ComposerViewProps> = ({ theme }) => {
                             className={`absolute right-3 top-3 p-2 rounded-full transition-colors duration-200 ${
                                 isLoading ? 'text-gray-500 cursor-not-allowed' : `text-gray-400 hover:${themeConfig.accent}`
                             }`}
-                            aria-label="Enhance Prompt"
-                            title="Enhance Prompt"
+                            aria-label={t('enhancePrompt')}
+                            title={t('enhancePrompt')}
                         >
                             <MagicWandIcon className="w-5 h-5" />
                         </button>
@@ -147,10 +151,10 @@ const ComposerView: React.FC<ComposerViewProps> = ({ theme }) => {
                     className={`ripple-button w-full flex justify-center items-center gap-2 py-3 px-4 text-base font-semibold rounded-xl transition-all duration-300 text-white ${
                         isLoading || !prompt.trim() 
                         ? 'bg-gray-600 cursor-not-allowed' 
-                        : `bg-[var(--custom-accent-color,theme(colors.sky.500))] hover:opacity-90 active:scale-95 shadow-lg shadow-[var(--custom-accent-color,theme(colors.sky.500))]/30`
+                        : `bg-[var(--custom-accent-color,theme(colors.gray.800))] hover:opacity-90 active:scale-95 shadow-lg shadow-[var(--custom-accent-color,theme(colors.gray.800))]/30`
                     }`}
                 >
-                    {isLoading ? <><SpinnerIcon className="w-6 h-6" /> {loadingMessage}</> : 'Generate'}
+                    {isLoading ? <><SpinnerIcon className="w-6 h-6" /> {loadingMessage}</> : t('generate')}
                 </button>
                 
                 <div className={`mt-2 w-full min-h-[300px] flex justify-center items-center rounded-xl p-2 ${
@@ -164,7 +168,7 @@ const ComposerView: React.FC<ComposerViewProps> = ({ theme }) => {
                     )}
                     {result?.error && (
                         <div className="text-red-400 p-4 text-center">
-                            <p className="font-bold">Generation Failed</p>
+                            <p className="font-bold">{t('generationFailed')}</p>
                             <p>{result.error}</p>
                         </div>
                     )}
@@ -176,13 +180,13 @@ const ComposerView: React.FC<ComposerViewProps> = ({ theme }) => {
                         />
                     )}
                     {!isLoading && !result && (
-                        <p className="text-gray-400">Your generated image will appear here</p>
+                        <p className="text-gray-400">{t('yourImageWillAppear')}</p>
                     )}
                 </div>
 
                 {result?.imageUrl && !isLoading && (
                     <div className="w-full animate-fade-in-chunk">
-                        <h3 className="text-sm font-semibold mb-2 uppercase tracking-wider">Evolve Image</h3>
+                        <h3 className="text-sm font-semibold mb-2 uppercase tracking-wider">{t('evolveImage')}</h3>
                         <div className="flex flex-wrap gap-2">
                             {REMIX_SUGGESTIONS.map(suggestion => (
                                 <button

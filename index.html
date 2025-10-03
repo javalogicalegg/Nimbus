@@ -29,6 +29,17 @@
       .animate-fade-in-chunk {
         animation: fade-in-chunk 0.4s ease-out forwards;
       }
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .animate-fade-in {
+        animation: fade-in 0.5s ease-out forwards;
+      }
       @keyframes glint {
         0% {
             transform: translateX(-100%) skewX(-20deg);
@@ -63,7 +74,7 @@
         100% { background-position: 0% 50%; }
       }
       .gradient-bg-dark {
-        background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #1e293b);
+        background: linear-gradient(-45deg, #000000, #111111, #000000, #222222);
         background-size: 400% 400%;
         animation: animated-gradient 30s ease infinite;
       }
@@ -121,7 +132,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>

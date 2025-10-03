@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface HistoryItem {
     id: string;
@@ -12,11 +13,12 @@ interface GenerationHistoryProps {
 }
 
 const GenerationHistory: React.FC<GenerationHistoryProps> = ({ history, onSelect }) => {
+    const { t } = useLanguage();
     if (history.length === 0) return null;
 
     return (
         <div className="w-full animate-fade-in-chunk">
-            <h3 className="text-sm font-semibold mb-2 uppercase tracking-wider">History</h3>
+            <h3 className="text-sm font-semibold mb-2 uppercase tracking-wider">{t('history')}</h3>
             <div className="flex gap-3 overflow-x-auto pb-2 -mx-6 px-6">
                 {history.map(item => (
                     <button 

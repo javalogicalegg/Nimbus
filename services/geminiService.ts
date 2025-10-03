@@ -8,7 +8,7 @@ if (!process.env.API_KEY) {
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const TEXT_MODEL = 'gemini-2.5-flash';
-const IMAGE_MODEL = 'imagen-3.0-generate-002';
+const IMAGE_MODEL = 'imagen-4.0-generate-001';
 
 interface ImagePart {
     data: string; // base64 encoded string
@@ -56,7 +56,7 @@ export const generateTextStream = async (
         }
     } catch (error) {
         console.error("Error generating text:", error);
-        throw new Error("Failed to generate text response. Please check the console for details.");
+        throw new Error("Failed to generate text response.");
     }
 };
 
@@ -81,6 +81,6 @@ export const generateImage = async (prompt: string, aspectRatio: string = '1:1')
         }
     } catch (error) {
         console.error("Error generating image:", error);
-        throw new Error("Failed to generate image. The model may have safety restrictions. Please check the console for details.");
+        throw new Error("Failed to generate image.");
     }
 };

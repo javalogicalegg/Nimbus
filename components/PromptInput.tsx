@@ -5,6 +5,7 @@ import PaperclipIcon from './icons/PaperclipIcon';
 import XCircleIcon from './icons/XCircleIcon';
 import { Theme } from '../types';
 import { THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ImageFile {
   dataUrl: string; // This is the base64 encoded string with mime type prefix
@@ -21,6 +22,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<ImageFile | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useLanguage();
   
   const themeConfig = theme === Theme.Custom 
     ? CUSTOM_THEME_CONFIG 
@@ -63,7 +65,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
                     type="button" 
                     onClick={() => setImage(null)}
                     className="absolute -top-2 -right-2 bg-gray-800 rounded-full text-gray-300 hover:text-white"
-                    aria-label="Remove image"
+                    aria-label={t('removeImage')}
                 >
                     <XCircleIcon className="w-6 h-6" />
                 </button>
@@ -81,7 +83,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
                 handleSubmit(e as any);
             }
             }}
-            placeholder="Ask me anything..."
+            placeholder={t('askMeAnything')}
             disabled={isLoading}
             className={`w-full p-4 pl-14 pr-14 text-base rounded-2xl resize-none border-2 focus:outline-none focus:ring-2 transition-all duration-300 ${
             theme === Theme.White
@@ -105,7 +107,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
             className={`absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-colors duration-200 ${
                 isLoading ? 'text-gray-500 cursor-not-allowed' : 'text-gray-400 hover:text-white'
             }`}
-            aria-label="Attach image"
+            aria-label={t('attachImage')}
         >
             <PaperclipIcon className="w-6 h-6" />
         </button>

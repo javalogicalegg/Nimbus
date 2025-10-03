@@ -1,5 +1,6 @@
 import React from 'react';
 import { Theme } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ThemeSwitcherProps {
   currentTheme: Theme;
@@ -14,9 +15,10 @@ const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
   customColor,
   onCustomColorChange,
 }) => {
+  const { t } = useLanguage();
   const themes = [
-    { id: Theme.Dark, color: 'bg-slate-800', name: 'Dark' },
-    { id: Theme.White, color: 'bg-white', name: 'Light' },
+    { id: Theme.Dark, color: 'bg-black', name: t('themeDark') },
+    { id: Theme.White, color: 'bg-white', name: t('themeLight') },
   ];
 
   return (
@@ -65,14 +67,14 @@ const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
               currentTheme === Theme.Custom ? 'text-[var(--custom-accent-color)] font-semibold' : ''
             }`}
           >
-            Custom
+            {t('themeCustom')}
           </span>
         </button>
 
         {currentTheme === Theme.Custom && (
           <div className="mt-3 pl-9">
             <label className="relative flex items-center cursor-pointer">
-              <span className="text-sm mr-2">Color:</span>
+              <span className="text-sm mr-2">{t('customColor')}</span>
               <input
                 type="color"
                 value={customColor}

@@ -4,6 +4,7 @@ import { THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
 import SpinnerIcon from './icons/SpinnerIcon';
 import MarkdownRenderer from './MarkdownRenderer';
 import StreamingText from './StreamingText';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface MessageProps {
   message: ChatMessage;
@@ -13,6 +14,7 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ message, theme, isLoading, isLastMessage }) => {
+  const { t } = useLanguage();
   const isUser = message.role === 'user';
   const themeConfig = theme === Theme.Custom
     ? CUSTOM_THEME_CONFIG
@@ -26,7 +28,7 @@ const Message: React.FC<MessageProps> = ({ message, theme, isLoading, isLastMess
         return (
           <div className="flex items-center space-x-2">
             <SpinnerIcon className="w-5 h-5" />
-            <span>{message.content || 'Thinking...'}</span>
+            <span>{message.content || t('thinking')}</span>
           </div>
         );
       case 'image':

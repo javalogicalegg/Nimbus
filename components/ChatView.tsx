@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Theme, ChatMessage } from '../types';
-import { CHAT_INITIAL_MESSAGE, PERSONAS } from '../constants';
+import { getChatInitialMessage, PERSONAS } from '../constants';
 import { generateTextStream } from '../services/geminiService';
 import ChatWindow from './ChatWindow';
 import PromptInput from './PromptInput';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ChatViewProps {
   theme: Theme;
+  userName: string;
 }
 
-const ChatView: React.FC<ChatViewProps> = ({ theme }) => {
-    const [messages, setMessages] = useState<ChatMessage[]>([CHAT_INITIAL_MESSAGE]);
+const ChatView: React.FC<ChatViewProps> = ({ theme, userName }) => {
+    const { t } = useLanguage();
+    const [messages, setMessages] = useState<ChatMessage[]>([getChatInitialMessage(t)]);
     const [isLoading, setIsLoading] = useState(false);
     const persona = PERSONAS.find(p => p.id === 'default') || PERSONAS[0];
 
@@ -36,6 +39,8 @@ const ChatView: React.FC<ChatViewProps> = ({ theme }) => {
         };
 
         setMessages((prev) => [...prev, userMessage, assistantMessage]);
+        
+        const systemInstruction = `${persona.systemInstruction} The user's name is ${userName}. Address them by their name when appropriate.`;
 
         try {
             await generateTextStream(prompt, (chunk) => {
@@ -46,7 +51,7 @@ const ChatView: React.FC<ChatViewProps> = ({ theme }) => {
                             : msg
                     )
                 );
-            }, persona.systemInstruction, image);
+            }, systemInstruction, image);
         } catch (error) {
             console.error(error);
             setMessages((prev) =>
@@ -55,7 +60,7 @@ const ChatView: React.FC<ChatViewProps> = ({ theme }) => {
                         ? {
                             ...msg,
                             type: 'error',
-                            content: error instanceof Error ? error.message : 'An unknown error occurred.',
+                            content: t('errorFailedToGenerateText'),
                         }
                         : msg
                 )
@@ -68,7 +73,7 @@ const ChatView: React.FC<ChatViewProps> = ({ theme }) => {
     return (
         <>
             <ChatWindow messages={messages} theme={theme} isLoading={isLoading} />
-            <div className={`relative p-4 ${theme === Theme.White ? 'bg-white' : 'bg-slate-800/50'}`}>
+            <div className={`relative p-4 ${theme === Theme.White ? 'bg-white' : 'bg-black/50'}`}>
                  <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${
                     theme === Theme.White ? 'from-transparent via-gray-200 to-transparent' : 'from-transparent via-gray-700 to-transparent'
                 }`} />

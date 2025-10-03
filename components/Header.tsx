@@ -4,6 +4,8 @@ import { Theme, AppMode } from '../types';
 import ThemeSwitcher from './ThemeSwitcher';
 import CloudIcon from './icons/CloudIcon';
 import DotsMenuIcon from './icons/DotsMenuIcon';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 interface HeaderProps {
   theme: Theme;
@@ -40,7 +42,7 @@ const NavButton: React.FC<{
               ? 'bg-[var(--custom-accent-color)]'
               : theme === Theme.White
               ? 'bg-indigo-500'
-              : 'bg-sky-400'
+              : 'bg-white'
           } ${themeConfig.iconGlow}`}
         ></span>
       )}
@@ -52,6 +54,7 @@ const NavButton: React.FC<{
 const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCustomColorChange, mode, onModeChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
   
   const themeConfig = theme === Theme.Custom 
     ? CUSTOM_THEME_CONFIG 
@@ -72,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
   return (
     <header
       className={`sticky top-0 z-20 p-4 flex justify-between items-center ${
-        theme === Theme.White ? 'bg-white/80' : 'bg-slate-900/50'
+        theme === Theme.White ? 'bg-white/80' : 'bg-black/50'
       } backdrop-blur-sm`}
     >
       <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r ${
@@ -90,9 +93,9 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
       </div>
       
       <div className="flex items-center gap-2">
-          <NavButton onClick={() => onModeChange('chat')} isActive={mode === 'chat'} theme={theme}>Chat</NavButton>
-          <NavButton onClick={() => onModeChange('composer')} isActive={mode === 'composer'} theme={theme}>Composer</NavButton>
-          <NavButton onClick={() => onModeChange('sandbox')} isActive={mode === 'sandbox'} theme={theme}>Sandbox</NavButton>
+          <NavButton onClick={() => onModeChange('chat')} isActive={mode === 'chat'} theme={theme}>{t('chat')}</NavButton>
+          <NavButton onClick={() => onModeChange('composer')} isActive={mode === 'composer'} theme={theme}>{t('composer')}</NavButton>
+          <NavButton onClick={() => onModeChange('sandbox')} isActive={mode === 'sandbox'} theme={theme}>{t('sandbox')}</NavButton>
       </div>
 
 
@@ -100,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className={`p-2 rounded-full hover:bg-gray-500/20 transition-colors ${themeConfig.text}`}
-          aria-label="Open settings menu"
+          aria-label={t('settingsMenu')}
           aria-haspopup="true"
           aria-expanded={isMenuOpen}
         >
@@ -114,16 +117,24 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
             }`}
             role="menu"
           >
-             <div>
-                <p className={`text-sm font-semibold mb-4 ${themeConfig.text}`}>
-                Appearance
-                </p>
-                <ThemeSwitcher
-                currentTheme={theme}
-                onThemeChange={onThemeChange}
-                customColor={customColor}
-                onCustomColorChange={onCustomColorChange}
-                />
+             <div className="space-y-6">
+                <div>
+                  <p className={`text-sm font-semibold mb-4 ${themeConfig.text}`}>
+                  {t('appearance')}
+                  </p>
+                  <ThemeSwitcher
+                  currentTheme={theme}
+                  onThemeChange={onThemeChange}
+                  customColor={customColor}
+                  onCustomColorChange={onCustomColorChange}
+                  />
+                </div>
+                <div>
+                   <p className={`text-sm font-semibold mb-4 ${themeConfig.text}`}>
+                    {t('language')}
+                   </p>
+                   <LanguageSwitcher />
+                </div>
              </div>
           </div>
         )}

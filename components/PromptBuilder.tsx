@@ -2,6 +2,7 @@
 import React from 'react';
 import { Theme } from '../types';
 import { THEME_CONFIGS, CUSTOM_THEME_CONFIG } from '../constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface PromptBuilderProps {
   onModifierClick: (modifier: string) => void;
@@ -61,17 +62,18 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({
   selectedAspectRatio,
   theme,
 }) => {
+  const { t } = useLanguage();
   return (
     <div className={`p-4 rounded-xl border-2 transition-colors duration-300 space-y-4 ${
         theme === Theme.White ? 'bg-white border-gray-200' : 'bg-gray-900/30 border-gray-700'
     }`}>
-      <Section title="Style">
+      <Section title={t('style')}>
         {STYLES.map(style => <ModifierButton key={style} onClick={() => onModifierClick(style)} theme={theme}>{style}</ModifierButton>)}
       </Section>
-      <Section title="Details">
+      <Section title={t('details')}>
         {DETAILS.map(detail => <ModifierButton key={detail} onClick={() => onModifierClick(detail)} theme={theme}>{detail}</ModifierButton>)}
       </Section>
-      <Section title="Aspect Ratio">
+      <Section title={t('aspectRatio')}>
         {ASPECT_RATIOS.map(ratio => (
             <AspectRatioButton 
                 key={ratio} 

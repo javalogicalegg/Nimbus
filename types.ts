@@ -1,4 +1,11 @@
 
+export enum Language {
+    EN = 'en',
+    ES = 'es',
+    FR = 'fr',
+    DE = 'de',
+}
+
 export enum Theme {
   Dark = 'dark',
   White = 'white',
@@ -9,7 +16,7 @@ export type AppMode = 'chat' | 'composer' | 'sandbox';
 
 export type Persona = {
   id: string;
-  name: string;
+  nameKey: string; // Changed from name to nameKey for i18n
   icon: string;
   systemInstruction: string;
 };

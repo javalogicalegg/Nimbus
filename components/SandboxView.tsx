@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Theme, ChatMessage, Persona } from '../types';
-import { SANDBOX_INITIAL_MESSAGE, PERSONAS } from '../constants';
+import { getSandboxInitialMessage, PERSONAS } from '../constants';
 import { generateTextStream } from '../services/geminiService';
 import ChatWindow from './ChatWindow';
 import PromptInput from './PromptInput';
 import PersonaSwitcher from './PersonaSwitcher';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface SandboxViewProps {
     theme: Theme;
+    userName: string;
 }
 
-const SandboxView: React.FC<SandboxViewProps> = ({ theme }) => {
+const SandboxView: React.FC<SandboxViewProps> = ({ theme, userName }) => {
+    const { t } = useLanguage();
     const [persona, setPersona] = useState<Persona>(() => {
         const savedPersonaId = localStorage.getItem('sandboxPersonaId');
         return PERSONAS.find(p => p.id === savedPersonaId) || PERSONAS[1]; // default to code helper
     });
-    const [messages, setMessages] = useState<ChatMessage[]>([SANDBOX_INITIAL_MESSAGE]);
+    const [messages, setMessages] = useState<ChatMessage[]>([getSandboxInitialMessage(t)]);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -26,12 +29,12 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme }) => {
         if (newPersona.id === persona.id) return;
         setPersona(newPersona);
         setMessages([
-            SANDBOX_INITIAL_MESSAGE,
+            getSandboxInitialMessage(t),
             {
                 id: crypto.randomUUID(),
                 role: 'assistant',
                 type: 'text',
-                content: `You are now chatting with the **${newPersona.name}** persona. ${newPersona.icon}`
+                content: t('nowChattingWith', { personaName: t(newPersona.nameKey), personaIcon: newPersona.icon })
             }
         ]);
     };
@@ -58,6 +61,8 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme }) => {
         };
 
         setMessages((prev) => [...prev, userMessage, assistantMessage]);
+        
+        const systemInstruction = `${persona.systemInstruction} The user's name is ${userName}. Address them by their name when appropriate.`;
 
         try {
             await generateTextStream(prompt, (chunk) => {
@@ -68,7 +73,7 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme }) => {
                             : msg
                     )
                 );
-            }, persona.systemInstruction, image);
+            }, systemInstruction, image);
         } catch (error) {
             console.error(error);
             setMessages((prev) =>
@@ -77,7 +82,7 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme }) => {
                         ? {
                             ...msg,
                             type: 'error',
-                            content: error instanceof Error ? error.message : 'An unknown error occurred.',
+                            content: t('errorFailedToGenerateText'),
                         }
                         : msg
                 )
@@ -89,7 +94,7 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme }) => {
 
     return (
         <>
-            <div className={`relative p-4 ${theme === Theme.White ? 'bg-gray-50' : 'bg-slate-900/50'}`}>
+            <div className={`relative p-4 ${theme === Theme.White ? 'bg-gray-50' : 'bg-black/50'}`}>
                 <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r ${
                     theme === Theme.White ? 'from-transparent via-gray-200 to-transparent' : 'from-transparent via-gray-700 to-transparent'
                 }`} />
@@ -102,7 +107,7 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme }) => {
                 </div>
             </div>
             <ChatWindow messages={messages} theme={theme} isLoading={isLoading} />
-            <div className={`relative p-4 ${theme === Theme.White ? 'bg-white' : 'bg-slate-800/50'}`}>
+            <div className={`relative p-4 ${theme === Theme.White ? 'bg-white' : 'bg-black/50'}`}>
                 <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${
                     theme === Theme.White ? 'from-transparent via-gray-200 to-transparent' : 'from-transparent via-gray-700 to-transparent'
                 }`} />
