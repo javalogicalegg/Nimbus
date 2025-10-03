@@ -63,11 +63,11 @@ const Message: React.FC<MessageProps> = ({ message, theme, isLoading, isLastMess
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-xl lg:max-w-2xl px-4 py-3 rounded-2xl ${
+        className={`max-w-xl lg:max-w-2xl px-4 py-3 rounded-xl border ${
           isUser
-            ? `${themeConfig.userBubble} ${themeConfig.userText}`
-            : `${themeConfig.assistantBubble} ${themeConfig.assistantText}`
-        } ${isStreaming ? 'animate-message-pulse' : ''}`}
+            ? `${themeConfig.userBubble} ${themeConfig.userText} border-transparent`
+            : `${themeConfig.assistantBubble} ${themeConfig.assistantText} ${theme === Theme.White ? 'border-gray-200' : 'border-gray-800'}`
+        }`}
       >
         {renderContent()}
       </div>

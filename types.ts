@@ -31,3 +31,11 @@ export interface ChatMessage {
   content: string;
   imageUrl?: string;
 }
+
+export type ModelId = 'gemini-2.5-flash' | 'gemini-2.5-pro';
+
+export type Model = {
+  id: ModelId;
+  name: string;
+  isPro?: boolean;
+};

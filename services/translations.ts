@@ -5,6 +5,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // General
     appName: "Nimbus",
     continue: "Continue",
+    model: "Model",
     // Login
     welcome: "Welcome!",
     enterNamePrompt: "Please enter your name to begin.",
@@ -32,7 +33,7 @@ export const translations: Record<Language, Record<string, string>> = {
     removeImage: "Remove image",
     thinking: "Thinking...",
     // Chat View
-    chatInitialMessage: "Hello! I am Nimbus, your reality composer. You can chat with me or upload an image by clicking the paperclip icon.",
+    chatInitialMessage: "Hello! I am Nimbus. You can chat with me or upload an image by clicking the paperclip icon.",
     // Sandbox View
     sandboxInitialMessage: "Welcome to the Persona Sandbox! Choose a persona from the list below and start a conversation to see how they respond.",
     nowChattingWith: "You are now chatting with the **{personaName}** persona. {personaIcon}",
@@ -63,6 +64,7 @@ export const translations: Record<Language, Record<string, string>> = {
   [Language.ES]: {
     appName: "Nimbus",
     continue: "Continuar",
+    model: "Modelo",
     welcome: "¡Bienvenido!",
     enterNamePrompt: "Por favor, introduce tu nombre para empezar.",
     yourNamePlaceholder: "Tu Nombre",
@@ -84,7 +86,7 @@ export const translations: Record<Language, Record<string, string>> = {
     attachImage: "Adjuntar imagen",
     removeImage: "Quitar imagen",
     thinking: "Pensando...",
-    chatInitialMessage: "¡Hola! Soy Nimbus, tu compositor de realidad. Puedes chatear conmigo o subir una imagen haciendo clic en el icono del clip.",
+    chatInitialMessage: "¡Hola! Soy Nimbus. Puedes chatear conmigo o subir una imagen haciendo clic en el icono del clip.",
     sandboxInitialMessage: "¡Bienvenido al Sandbox de Personas! Elige una persona de la lista de abajo y comienza una conversación para ver cómo responde.",
     nowChattingWith: "Ahora estás chateando con la persona **{personaName}**. {personaIcon}",
     personaDefault: "Estándar",
@@ -110,6 +112,7 @@ export const translations: Record<Language, Record<string, string>> = {
   [Language.FR]: {
     appName: "Nimbus",
     continue: "Continuer",
+    model: "Modèle",
     welcome: "Bienvenue !",
     enterNamePrompt: "Veuillez entrer votre nom pour commencer.",
     yourNamePlaceholder: "Votre Nom",
@@ -131,7 +134,7 @@ export const translations: Record<Language, Record<string, string>> = {
     attachImage: "Joindre une image",
     removeImage: "Supprimer l'image",
     thinking: "Réflexion...",
-    chatInitialMessage: "Bonjour ! Je suis Nimbus, votre compositeur de réalité. Vous pouvez discuter avec moi ou télécharger une image en cliquant sur l'icône du trombone.",
+    chatInitialMessage: "Bonjour ! Je suis Nimbus. Vous pouvez discuter avec moi ou télécharger une image en cliquant sur l'icône du trombone.",
     sandboxInitialMessage: "Bienvenue dans le Bac à Sable des Personas ! Choisissez un persona dans la liste ci-dessous et commencez une conversation pour voir comment il répond.",
     nowChattingWith: "Vous discutez maintenant avec le persona **{personaName}**. {personaIcon}",
     personaDefault: "Défaut",
@@ -157,6 +160,7 @@ export const translations: Record<Language, Record<string, string>> = {
   [Language.DE]: {
     appName: "Nimbus",
     continue: "Weiter",
+    model: "Modell",
     welcome: "Willkommen!",
     enterNamePrompt: "Bitte gib deinen Namen ein, um zu beginnen.",
     yourNamePlaceholder: "Dein Name",
@@ -178,7 +182,7 @@ export const translations: Record<Language, Record<string, string>> = {
     attachImage: "Bild anhängen",
     removeImage: "Bild entfernen",
     thinking: "Denke...",
-    chatInitialMessage: "Hallo! Ich bin Nimbus, Ihr Realitätskomponist. Sie können mit mir chatten oder ein Bild hochladen, indem Sie auf das Büroklammersymbol klicken.",
+    chatInitialMessage: "Hallo! Ich bin Nimbus. Sie können mit mir chatten oder ein Bild hochladen, indem Sie auf das Büroklammersymbol klicken.",
     sandboxInitialMessage: "Willkommen in der Persona-Sandbox! Wählen Sie eine Persona aus der folgenden Liste und beginnen Sie ein Gespräch, um zu sehen, wie sie reagiert.",
     nowChattingWith: "Sie chatten jetzt mit der Persona **{personaName}**. {personaIcon}",
     personaDefault: "Standard",

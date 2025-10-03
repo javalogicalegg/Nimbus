@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Theme, ChatMessage } from '../types';
-import { getChatInitialMessage, PERSONAS } from '../constants';
+import React, { useState, useEffect } from 'react';
+import { Theme, ChatMessage, ModelId } from '../types';
+import { getChatInitialMessage, PERSONAS, MODELS } from '../constants';
 import { generateTextStream } from '../services/geminiService';
 import ChatWindow from './ChatWindow';
 import PromptInput from './PromptInput';
 import { useLanguage } from '../contexts/LanguageContext';
+import ModelSwitcher from './ModelSwitcher';
 
 interface ChatViewProps {
   theme: Theme;
@@ -15,7 +16,15 @@ const ChatView: React.FC<ChatViewProps> = ({ theme, userName }) => {
     const { t } = useLanguage();
     const [messages, setMessages] = useState<ChatMessage[]>([getChatInitialMessage(t)]);
     const [isLoading, setIsLoading] = useState(false);
+    const [model, setModel] = useState<ModelId>(() => {
+        const savedModel = localStorage.getItem('chatModelId') as ModelId;
+        return savedModel || 'gemini-2.5-flash';
+    });
     const persona = PERSONAS.find(p => p.id === 'default') || PERSONAS[0];
+
+    useEffect(() => {
+        localStorage.setItem('chatModelId', model);
+    }, [model]);
 
     const handleSendMessage = async (prompt: string, image?: { data: string; mimeType: string }) => {
         setIsLoading(true);
@@ -51,7 +60,7 @@ const ChatView: React.FC<ChatViewProps> = ({ theme, userName }) => {
                             : msg
                     )
                 );
-            }, systemInstruction, image);
+            }, model, systemInstruction, image);
         } catch (error) {
             console.error(error);
             setMessages((prev) =>
@@ -72,11 +81,17 @@ const ChatView: React.FC<ChatViewProps> = ({ theme, userName }) => {
 
     return (
         <>
+            <div className={`p-3 ${theme === Theme.White ? 'bg-gray-50 border-b border-gray-200' : 'bg-black/50 border-b border-gray-800'}`}>
+                <div className="max-w-4xl mx-auto flex justify-center">
+                    <ModelSwitcher
+                        models={MODELS}
+                        currentModelId={model}
+                        onModelChange={setModel}
+                    />
+                </div>
+            </div>
             <ChatWindow messages={messages} theme={theme} isLoading={isLoading} />
-            <div className={`relative p-4 ${theme === Theme.White ? 'bg-white' : 'bg-black/50'}`}>
-                 <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${
-                    theme === Theme.White ? 'from-transparent via-gray-200 to-transparent' : 'from-transparent via-gray-700 to-transparent'
-                }`} />
+            <div className={`p-4 ${theme === Theme.White ? 'bg-white border-t border-gray-200' : 'bg-black/50 border-t border-gray-800'}`}>
                 <div className="max-w-4xl mx-auto">
                     <PromptInput onSendMessage={handleSendMessage} isLoading={isLoading} theme={theme} />
                 </div>

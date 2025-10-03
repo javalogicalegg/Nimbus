@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import SendIcon from './icons/SendIcon';
 import PaperclipIcon from './icons/PaperclipIcon';
 import XCircleIcon from './icons/XCircleIcon';
@@ -22,6 +22,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<ImageFile | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { t } = useLanguage();
   
   const themeConfig = theme === Theme.Custom 
@@ -55,16 +56,26 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
       e.target.value = '';
   }
 
+  // Auto-resize textarea
+  useEffect(() => {
+    const ta = textareaRef.current;
+    if (ta) {
+      ta.style.height = 'auto';
+      const scrollHeight = ta.scrollHeight;
+      ta.style.height = `${scrollHeight}px`;
+    }
+  }, [prompt]);
+
   return (
     <form onSubmit={handleSubmit} className="relative">
       {image && (
-        <div className="absolute bottom-full left-0 mb-2 p-2 bg-gray-700/80 rounded-lg">
+        <div className="absolute bottom-full left-2 mb-2 p-1.5 bg-black/50 backdrop-blur-sm rounded-lg animate-fade-in">
             <div className="relative">
                 <img src={image.dataUrl} alt="upload preview" className="h-20 w-20 object-cover rounded-md" />
                 <button 
                     type="button" 
                     onClick={() => setImage(null)}
-                    className="absolute -top-2 -right-2 bg-gray-800 rounded-full text-gray-300 hover:text-white"
+                    className="absolute -top-2 -right-2 bg-gray-900 rounded-full text-gray-300 hover:text-white transition-colors"
                     aria-label={t('removeImage')}
                 >
                     <XCircleIcon className="w-6 h-6" />
@@ -72,9 +83,24 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
             </div>
         </div>
       )}
-
-      <div className="relative">
+      
+      <div className={`group flex items-start gap-2 p-2 rounded-xl border transition-all duration-300 ${
+        theme === Theme.White ? 'bg-white border-gray-200 focus-within:border-indigo-400' : 'bg-gray-900 border-gray-800 focus-within:border-gray-600'
+      }`}>
+        <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isLoading}
+            className={`flex-shrink-0 p-2 rounded-lg transition-colors duration-200 ${
+                isLoading ? 'text-gray-500 cursor-not-allowed' : 'text-gray-400 hover:text-gray-200'
+            }`}
+            aria-label={t('attachImage')}
+        >
+            <PaperclipIcon className="w-6 h-6" />
+        </button>
+        
         <textarea
+            ref={textareaRef}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => {
@@ -85,13 +111,11 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
             }}
             placeholder={t('askMeAnything')}
             disabled={isLoading}
-            className={`w-full p-4 pl-14 pr-14 text-base rounded-2xl resize-none border-2 focus:outline-none focus:ring-2 transition-all duration-300 ${
-            theme === Theme.White
-                ? 'bg-white border-gray-300 text-gray-900'
-                : 'bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400'
-            } ${themeConfig.inputFocus} ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full self-center bg-transparent pt-2 pb-2.5 text-base resize-none border-none focus:outline-none focus:ring-0 ${
+                theme === Theme.White ? 'text-gray-900' : 'text-gray-100 placeholder-gray-500'
+            } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             rows={1}
-            style={{ minHeight: '56px', maxHeight: '200px' }}
+            style={{ maxHeight: '200px' }}
         />
         <input 
             type="file" 
@@ -101,20 +125,9 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSendMessage, isLoading, the
             accept="image/*"
         />
         <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isLoading}
-            className={`absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-colors duration-200 ${
-                isLoading ? 'text-gray-500 cursor-not-allowed' : 'text-gray-400 hover:text-white'
-            }`}
-            aria-label={t('attachImage')}
-        >
-            <PaperclipIcon className="w-6 h-6" />
-        </button>
-        <button
             type="submit"
             disabled={isLoading || (!prompt.trim() && !image)}
-            className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all duration-200 ${
+            className={`self-end flex-shrink-0 p-2 rounded-lg transition-all duration-200 ${
             isLoading || (!prompt.trim() && !image)
                 ? 'text-gray-400 cursor-not-allowed'
                 : `${themeConfig.accent} hover:bg-gray-500/20 active:scale-95 [filter:drop-shadow(0_0_4px_currentColor)]`

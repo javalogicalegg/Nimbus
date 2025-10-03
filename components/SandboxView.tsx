@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Theme, ChatMessage, Persona } from '../types';
-import { getSandboxInitialMessage, PERSONAS } from '../constants';
+import { Theme, ChatMessage, Persona, ModelId } from '../types';
+import { getSandboxInitialMessage, PERSONAS, MODELS } from '../constants';
 import { generateTextStream } from '../services/geminiService';
 import ChatWindow from './ChatWindow';
 import PromptInput from './PromptInput';
 import PersonaSwitcher from './PersonaSwitcher';
+import ModelSwitcher from './ModelSwitcher';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface SandboxViewProps {
@@ -18,6 +19,10 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme, userName }) => {
         const savedPersonaId = localStorage.getItem('sandboxPersonaId');
         return PERSONAS.find(p => p.id === savedPersonaId) || PERSONAS[1]; // default to code helper
     });
+    const [model, setModel] = useState<ModelId>(() => {
+        const savedModel = localStorage.getItem('sandboxModelId') as ModelId;
+        return savedModel || 'gemini-2.5-flash';
+    });
     const [messages, setMessages] = useState<ChatMessage[]>([getSandboxInitialMessage(t)]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -25,6 +30,10 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme, userName }) => {
         localStorage.setItem('sandboxPersonaId', persona.id);
     }, [persona]);
     
+    useEffect(() => {
+        localStorage.setItem('sandboxModelId', model);
+    }, [model]);
+
     const handlePersonaChange = (newPersona: Persona) => {
         if (newPersona.id === persona.id) return;
         setPersona(newPersona);
@@ -73,7 +82,7 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme, userName }) => {
                             : msg
                     )
                 );
-            }, systemInstruction, image);
+            }, model, systemInstruction, image);
         } catch (error) {
             console.error(error);
             setMessages((prev) =>
@@ -94,23 +103,22 @@ const SandboxView: React.FC<SandboxViewProps> = ({ theme, userName }) => {
 
     return (
         <>
-            <div className={`relative p-4 ${theme === Theme.White ? 'bg-gray-50' : 'bg-black/50'}`}>
-                <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r ${
-                    theme === Theme.White ? 'from-transparent via-gray-200 to-transparent' : 'from-transparent via-gray-700 to-transparent'
-                }`} />
-                <div className="max-w-4xl mx-auto">
+            <div className={`p-4 ${theme === Theme.White ? 'bg-gray-50 border-b border-gray-200' : 'bg-black/50 border-b border-gray-800'}`}>
+                <div className="max-w-4xl mx-auto flex flex-col md:flex-row flex-wrap gap-4 items-center justify-center">
                     <PersonaSwitcher 
                         personas={PERSONAS}
                         currentPersona={persona}
                         onPersonaChange={handlePersonaChange}
                     />
+                     <ModelSwitcher
+                        models={MODELS}
+                        currentModelId={model}
+                        onModelChange={setModel}
+                    />
                 </div>
             </div>
             <ChatWindow messages={messages} theme={theme} isLoading={isLoading} />
-            <div className={`relative p-4 ${theme === Theme.White ? 'bg-white' : 'bg-black/50'}`}>
-                <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${
-                    theme === Theme.White ? 'from-transparent via-gray-200 to-transparent' : 'from-transparent via-gray-700 to-transparent'
-                }`} />
+            <div className={`p-4 ${theme === Theme.White ? 'bg-white border-t border-gray-200' : 'bg-black/50 border-t border-gray-800'}`}>
                 <div className="max-w-4xl mx-auto">
                     <PromptInput onSendMessage={handleSendMessage} isLoading={isLoading} theme={theme} />
                 </div>

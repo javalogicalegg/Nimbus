@@ -1,4 +1,4 @@
-import { Theme, ChatMessage, Persona } from './types';
+import { Theme, ChatMessage, Persona, Model } from './types';
 
 export const APP_NAME = "Nimbus";
 
@@ -48,43 +48,43 @@ export const THEME_CONFIGS: Record<Theme.Dark | Theme.White, ThemeConfig> = {
   [Theme.Dark]: {
     bg: 'bg-black',
     text: 'text-gray-200',
-    card: 'bg-gray-900/50',
+    card: 'bg-black/30',
     accent: 'text-white',
-    userBubble: 'bg-gray-700',
+    userBubble: 'bg-gray-800',
     assistantBubble: 'bg-gray-900',
     userText: 'text-white',
     assistantText: 'text-gray-200',
     textGlow: '[text-shadow:0_0_10px_rgba(255,255,255,0.4)]',
     iconGlow: '[filter:drop-shadow(0_0_4px_rgba(255,255,255,0.4))]',
-    inputFocus: 'focus:border-gray-500 focus:ring-gray-500/50 focus:shadow-[0_0_12px_0_theme(colors.gray.500)]',
+    inputFocus: 'focus:border-gray-600 focus:ring-1 focus:ring-gray-600/50 focus:shadow-[0_0_8px_0_theme(colors.gray.600)]',
   },
   [Theme.White]: {
     bg: 'bg-gray-50',
     text: 'text-gray-800',
-    card: 'bg-white',
+    card: 'bg-white/50',
     accent: 'text-indigo-600',
-    userBubble: 'bg-indigo-500',
-    assistantBubble: 'bg-gray-200',
+    userBubble: 'bg-indigo-600',
+    assistantBubble: 'bg-white',
     userText: 'text-white',
     assistantText: 'text-gray-800',
     textGlow: '[text-shadow:0_0_10px_theme(colors.indigo.500)]',
     iconGlow: '[filter:drop-shadow(0_0_4px_theme(colors.indigo.500))]',
-    inputFocus: 'focus:border-indigo-500 focus:ring-indigo-500/50 focus:shadow-[0_0_12px_0_theme(colors.indigo.500)]',
+    inputFocus: 'focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 focus:shadow-[0_0_8px_0_theme(colors.indigo.400)]',
   },
 };
 
 export const CUSTOM_THEME_CONFIG: ThemeConfig = {
     bg: 'bg-black',
     text: 'text-gray-200',
-    card: 'bg-gray-900/50',
+    card: 'bg-black/30',
     accent: 'text-[var(--custom-accent-color)]',
     userBubble: 'bg-[var(--custom-accent-color)]',
-    assistantBubble: 'bg-gray-800',
+    assistantBubble: 'bg-gray-900',
     userText: 'text-white',
     assistantText: 'text-gray-200',
     textGlow: '[text-shadow:0_0_10px_var(--custom-accent-color)]',
     iconGlow: '[filter:drop-shadow(0_0_4px_var(--custom-accent-color))]',
-    inputFocus: 'focus:border-[var(--custom-accent-color)] focus:ring-[var(--custom-accent-color)]/50 focus:shadow-[0_0_12px_0_var(--custom-accent-color)]',
+    inputFocus: 'focus:border-[var(--custom-accent-color)] focus:ring-1 focus:ring-[var(--custom-accent-color)]/50 focus:shadow-[0_0_8px_0_var(--custom-accent-color)]',
 };
 
 export const PERSONAS: Persona[] = [
@@ -112,4 +112,9 @@ export const PERSONAS: Persona[] = [
         icon: '🏴‍☠️',
         systemInstruction: "Ahoy, matey! Ye be chattin' with a salty sea dog. Answer all questions in the most stereotypical pirate dialect ye can muster, savvy?"
     }
+];
+
+export const MODELS: Model[] = [
+  { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+  { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro', isPro: true },
 ];

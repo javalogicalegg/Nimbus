@@ -30,20 +30,20 @@ const NavButton: React.FC<{
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 relative ${
-        isActive ? themeConfig.accent : 'text-gray-400 hover:text-white'
+      className={`px-3 py-2 text-sm font-medium transition-colors duration-200 relative ${
+        isActive ? themeConfig.accent : 'text-gray-400 hover:text-gray-200'
       }`}
     >
       {children}
       {isActive && (
         <span
-          className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-0.5 rounded-full ${
+          className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-3/4 h-[2px] rounded-full ${
             theme === Theme.Custom
               ? 'bg-[var(--custom-accent-color)]'
               : theme === Theme.White
               ? 'bg-indigo-500'
               : 'bg-white'
-          } ${themeConfig.iconGlow}`}
+          } [filter:drop-shadow(0_0_3px_currentColor)]`}
         ></span>
       )}
     </button>
@@ -74,13 +74,10 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
 
   return (
     <header
-      className={`sticky top-0 z-20 p-4 flex justify-between items-center ${
-        theme === Theme.White ? 'bg-white/80' : 'bg-black/50'
-      } backdrop-blur-sm`}
+      className={`sticky top-0 z-20 px-4 py-3 flex justify-between items-center ${
+        theme === Theme.White ? 'bg-white/80 border-b border-gray-200' : 'bg-black/50 border-b border-gray-800'
+      } backdrop-blur-md`}
     >
-      <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r ${
-        theme === Theme.White ? 'from-transparent via-gray-200 to-transparent' : 'from-transparent via-gray-700 to-transparent'
-      }`} />
       <div className="flex items-center gap-3 animate-pulse-glow">
         <CloudIcon
           className={`w-8 h-8 ${themeConfig.accent} ${themeConfig.iconGlow} transition-all duration-300`}
@@ -112,7 +109,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, customColor, onCu
 
         {isMenuOpen && (
           <div
-            className={`absolute top-full right-0 mt-2 p-4 rounded-xl shadow-lg z-10 w-56 ${
+            className={`absolute top-full right-0 mt-2 p-4 rounded-xl shadow-lg z-10 w-56 backdrop-blur-md ${
               themeConfig.card
             }`}
             role="menu"

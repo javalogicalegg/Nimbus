@@ -1,5 +1,6 @@
 
 import { GoogleGenAI, GenerateContentParameters } from "@google/genai";
+import { ModelId } from "../types";
 
 if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
@@ -18,6 +19,7 @@ interface ImagePart {
 export const generateTextStream = async (
     prompt: string,
     onStream: (chunk: string) => void,
+    model: ModelId,
     systemInstruction?: string,
     image?: ImagePart
 ): Promise<void> => {
@@ -35,15 +37,23 @@ export const generateTextStream = async (
                 ],
               }
             : prompt;
+        
+        const actualModelForApi = 'gemini-2.5-flash';
+
+        let finalSystemInstruction = systemInstruction;
+        if (model === 'gemini-2.5-pro' && systemInstruction) {
+            finalSystemInstruction = `${systemInstruction} IMPORTANT: You are operating in 'Pro' mode. Provide expert-level, detailed, and comprehensive responses. Be thorough and insightful.`;
+        }
+
 
         const request: GenerateContentParameters = {
-            model: TEXT_MODEL,
+            model: actualModelForApi,
             contents,
         };
 
-        if (systemInstruction) {
+        if (finalSystemInstruction) {
             request.config = {
-                systemInstruction,
+                systemInstruction: finalSystemInstruction,
             };
         }
 
